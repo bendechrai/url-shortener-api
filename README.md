@@ -138,4 +138,5 @@ now --prod
 ### Integrate Fauna into Zeit
 
 1. View your [Zeit Integrations](https://zeit.co/dashboard/integrations) and click on the URL Shortener Config;
-1. Select the `url-shortener-api` from the drop down to link this new project with your Fauna account
+1. Select the `url-shortener-api` from the drop downi; and
+1. Click on the **Link to project** button for `url-shortener` Fauna Database.
