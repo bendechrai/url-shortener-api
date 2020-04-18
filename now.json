@@ -3,7 +3,49 @@
     "ipgeolocation_apikey": "@ipgeolocation_apikey"
   },
   "routes": [
-    { "src": "^/?__redirects__$", "dest": "/api/redirects.js" },
-    { "src": "^/?[^/]*$", "dest": "/api/redirect.js" }
+    {
+      "src": ".*",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Methods": "*"
+      },
+      "continue": true
+    },
+    {
+      "src": "/redirects",
+      "dest": "/api/getAllRedirects.js",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "src": "/redirects/[^/]+",
+      "dest": "/api/getRedirect.js",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "src": "/redirects",
+      "dest": "/api/postRedirect.js",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "src": "/redirects/[^/]*",
+      "dest": "/api/putRedirect.js",
+      "methods": [
+        "PUT"
+      ]
+    },
+    {
+      "src": "^/clicks",
+      "dest": "/api/getClicks.js",
+      "methods": [
+        "GET"
+      ]
+    }
   ]
 }
