@@ -1,72 +1,141 @@
-# URL Shortener
+# URL Shortener API
+
+## API Usage
+
+### Get all redirects
+
+**Request**
+
+```
+GET https://url-shortener-api/redirects
+```
+
+**Response**
+
+Array of object containing `shortcode` and `dest`:
+
+```
+[
+    {
+        "shortcode": "twitter",
+        "dest": "https://twitter.com/bendechrai"
+    },
+    {
+        "shortcode": "youtube",
+        "dest": "https://youtube.com/c/bendechrai"
+    }
+]
+```
+
+### Get redirect
+
+**Request**
+
+```
+GET https://url-shortener-api/redirects/[shortcode]
+```
+
+**Response**
+
+Object containing `shortcode`, `dest`, `clicks` (the number of times this redirect has been used), and `history` (a 30 day history of clicks per day). *Note: clicks and history is still under development.*
+
+```
+{
+    "shortcode": "twitter",
+    "dest": "https://twitter.com/bendechrai",
+    "clicks": null,
+    "history": []
+}
+```
+
+### Create redirect
+
+**Request**
+
+```
+POST https://url-shortener-api/redirects
+{
+    "shortcode": "twtter",
+    "dest": "https://twitter.com/bendechrai"
+}
+```
+
+**Response**
+
+An object containing `message`, the `shortcode`, and on success, the `dest`.
+
+On success:
+
+```
+Status: 201 Created
+{
+    "message": "This shortcode has been created",
+    "shortcode": "twtter",
+    "dest": "https://twitter.com/bendechrai"
+}
+```
+
+On failure due to shortcode being in use already:
+
+```
+Status: 403 Forbidden
+{
+    "message": "This shortcode has already been used",
+    "shortcode": "twitter"
+}
+```
+
+### Update redirect
+
+**Request**
+
+```
+PUT https://url-shortener-api/redirects/[shortcode]
+{
+    "dest": "https://twitter.com/bendechrai"
+}
+```
+
+**Response**
+
+An object containing `message`, the `shortcode`, and on success, the `dest`.
+
+On success:
+
+```
+Status: 200 OK
+{
+    "message": "This shortcode has been updated",
+    "shortcode": "twitter",
+    "dest": "https://twitter.com/bendechrai"
+}
+```
+
+On failure due to shortcode not found:
+
+```
+Status: 404 Not Found
+{
+    "message": "This shortcode doesn't exist",
+    "shortcode": "twiter"
+}
+```
 
 ## Deploy your own
 
-### Zeit and Fauna accounts
-
-Sign up for a [Zeit](https://zeit.co) and [Fauna](https://fauna.com/) account if you don't have them already, and install the `now` command-line utilities.
-
-### IPGeolocation account
-
-Sign up for an [IP Geolocation](https://ipgeolocation.io/) account, and grab the API key - you'll need it in the next step.
+This install guide assumes you have already installed [url-shortener-redirector](https://github.com/bendechrai/url-shortener-redirector)
 
 ### Clone and deploy!
 
 Now run the following in your terminal:
 
 ```
-git clone https://github.com/bendechrai/url-shortener.git
-cd url-shortener
-now secret add ipgeolocation_apikey <XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX>
+git clone https://github.com/bendechrai/url-shortener-api.git
+cd url-shortener-api
 now --prod
 ```
 
 ### Integrate Fauna into Zeit
 
-1. [Create a new Fauna Database](https://dashboard.fauna.com/db-new/) called `url-shortener`;
-1. Add the [Fauna Integration](https://zeit.co/integrations/faunadb) into your Zeit account;
-1. Create a new [Fauna Database Server Key](https://dashboard.fauna.com/keys-new/@db/url-shortener) for your new database and copy the key;
-1. Create two collections in the database, called `redirects` and `clicks`; and
-1. Paste this key into Zeit's Fauna Integration setup when prompted, and link the Fauna database with the new Zeit project created during deployment.
-
-## Managing redirects
-
-### One at a time
-
-Head to the [`redirects` collection](https://dashboard.fauna.com/collections/redirects/@db/url-shortener), click on [New Document](https://dashboard.fauna.com/collections/documents-new/redirects/@db/url-shortener), and enter something in the following format:
-
-```
-{
-  "shortcode": "twitter",
-  "dest": "https://twitter.com/bendechrai"
-}
-```
-
-### Multiples
-
-If you are migrating from another system, you can generate a script that looks like this:
-
-```
-Create(Collection("redirects"), { data: { "shortcode": "contact", "dest": "https://bendechrai.com/contact/" } });
-Create(Collection("redirects"), { data: { "shortcode": "github", "dest": "https://github.com/bendechrai" } });
-Create(Collection("redirects"), { data: { "shortcode": "linkedin", "dest": "https://www.linkedin.com/in/bendechrai/" } });
-Create(Collection("redirects"), { data: { "shortcode": "twitter", "dest": "https://twitter.com/bendechrai" } });
-Create(Collection("redirects"), { data: { "shortcode": "youtube", "dest": "https://www.youtube.com/channel/UCY5SDWGg5Wa1ptwFF1EXQPg" } });
-```
-
-Take this, and paste it into the [Fauna Web Shell](https://dashboard.fauna.com/webshell/@db/url-shortener).
-
-## Default redirect
-
-If you go to the base URL of your URL Shortener (i.e.  https://url-shortener.yourname.now.sh/), this system will look for a shortcode of `__default__`. Creating a record like this will let you set the destination for this scenario:
-
-```
-{
-  "shortcode": "__default__",
-  "dest": "https://bendechrai.com"
-}
-```
-
-## Duplicates
-
-Currently, this redirector will fail if the shortcode cannot be found, or it is found more than once.
+1. View your [Zeit Integrations](https://zeit.co/dashboard/integrations) and click on the URL Shortener Config;
+1. Select the `url-shortener-api` from the drop down to link this new project with your Fauna account
