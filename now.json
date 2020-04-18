@@ -1,7 +1,4 @@
 {
-  "env": {
-    "ipgeolocation_apikey": "@ipgeolocation_apikey"
-  },
   "routes": [
     {
       "src": ".*",
