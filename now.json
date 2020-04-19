@@ -10,6 +10,13 @@
       "continue": true
     },
     {
+      "src": ".*",
+      "dest": "/api/options.js",
+      "methods": [
+        "OPTIONS"
+      ]
+    },
+    {
       "src": "/redirects",
       "dest": "/api/getAllRedirects.js",
       "methods": [
