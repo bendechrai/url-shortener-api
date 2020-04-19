@@ -22,7 +22,8 @@ const GetAllRedirects = async (userRequest, userResponse) => {
     const output = data.map(item => {
         return {
             shortcode: item.data.shortcode,
-            dest: item.data.dest
+            dest: item.data.dest,
+            clicks: 0
         }
     })
 
