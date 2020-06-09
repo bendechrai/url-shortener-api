@@ -2,8 +2,11 @@
   "name": "url-shortener",
   "version": "1.0.0",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.3",
     "faunadb": "^2.13.1",
-    "node-fetch": "^2.6.0"
+    "jwks-rsa": "^1.8.0"
   },
   "devDependencies": {},
   "repository": {
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/bendechrai/url-shortener/issues"
   },
-  "homepage": "https://github.com/bendechrai/url-shortener#readme"
+  "homepage": "https://github.com/bendechrai/url-shortener#readme",
+  "scripts": {
+    "start": "node index.js"
+  }
 }
