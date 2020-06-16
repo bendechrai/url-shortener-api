@@ -188,13 +188,13 @@ app.put('/redirects/:shortcode', async (req, res) => {
 
 })
 
-app.get("/clicks", async (userRequest, userResponse) => {
+app.get("/clicks/:shortcode", async (userRequest, userResponse) => {
 
-    const { FAUNADB_SECRET: faunadb_secret } = process.env
-    const client = new faunadb.Client({ secret: faunadb_secret })
+    const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET })
+    const shortcode = userRequest.params.shortcode
 
     const data = await client
-        .query(q.Paginate(q.Match(q.Ref("indexes/all_clicks"))))
+        .query(q.Paginate(q.Match(q.Ref("indexes/clicks"), shortcode)))
         .then(response => {
             const clickRefs = response.data
             const getAllClickDataQuery = clickRefs.map(ref => {
@@ -202,10 +202,7 @@ app.get("/clicks", async (userRequest, userResponse) => {
             });
             return client.query(getAllClickDataQuery);
         })
-        .catch(error => {
-            return []
-            userResponse.end()
-        })
+        .catch(error => userResponse.send("No clicks"))
 
     const output = data.map(item => {
         return item.data
