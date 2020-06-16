@@ -10,8 +10,8 @@ const jwks = require('jwks-rsa');
 require('dotenv').config()
 
 var corsOptions = {
-    origin: 'http://localhost:8000',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    origin: process.env.DASHBOARD_URL,
+    optionsSuccessStatus: 200
 }
 
 const port = 3000;
@@ -21,10 +21,10 @@ const jwtCheck = jwt({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: 'https://url-shortener.auth0.com/.well-known/jwks.json'
+        jwksUri: 'https://' + process.env.AUTH0_DOMAIN + '/.well-known/jwks.json'
   }),
-  audience: 'http://localhost:3000',
-  issuer: 'https://url-shortener.auth0.com/',
+  audience: process.env.API_IDENTIFIER,
+  issuer: 'https://' + process.env.AUTH0_DOMAIN + '/',
   algorithms: ['RS256']
 });
 
@@ -37,8 +37,7 @@ app.use(jwtCheck);
 
 app.get("/redirects", async (userRequest, userResponse) => {
 
-    const { FAUNADB_SECRET: faunadb_secret } = process.env
-    const client = new faunadb.Client({ secret: faunadb_secret })
+    const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET })
     const data = await client
         .query(q.Paginate(q.Match(q.Ref("indexes/all_redirects"))))
         .then(response => {
@@ -68,8 +67,7 @@ app.get("/redirects", async (userRequest, userResponse) => {
 
 app.get("/redirects/:shortcode", async (userRequest, userResponse) => {
 
-    const { FAUNADB_SECRET: faunadb_secret } = process.env
-    const client = new faunadb.Client({ secret: faunadb_secret })
+    const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET })
 
     const shortcode = userRequest.params.shortcode
 
@@ -101,8 +99,7 @@ app.get("/redirects/:shortcode", async (userRequest, userResponse) => {
 
 app.post('/redirects', async (req, res) => {
 
-    const { FAUNADB_SECRET: faunadb_secret } = process.env
-    const client = new faunadb.Client({ secret: faunadb_secret })
+    const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET })
     const data = req.body
     const shortcode = data.shortcode || ''
     const dest = data.dest || ''
@@ -144,8 +141,7 @@ app.post('/redirects', async (req, res) => {
 
 app.put('/redirects/:shortcode', async (req, res) => {
     
-    const { FAUNADB_SECRET: faunadb_secret } = process.env
-    const client = new faunadb.Client({ secret: faunadb_secret })
+    const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET })
     
     const shortcode = req.params.shortcode
     const data = req.body
