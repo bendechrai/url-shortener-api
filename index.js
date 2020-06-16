@@ -82,11 +82,14 @@ app.get("/redirects/:shortcode", async (userRequest, userResponse) => {
         })
         .catch(error => userResponse.send("Not found"));
 
+    const clickCount = await client
+        .query(q.Count(q.Match(q.Ref("indexes/clicks"), shortcode)))
+        .then(response => response)
+        .catch(error => userResponse.send("No clicks"))
+
     if (redirectInfo.length == 1) {
         let data = redirectInfo[0].data
-        data.clicks = null
-        data.history = [
-        ]
+        data.clicks = clickCount
         userResponse.json(data)
     } else {
         userResponse.status(404)
