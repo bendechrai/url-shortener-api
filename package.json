@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-jwt": "^6.0.0",
     "faunadb": "^2.13.1",
     "jwks-rsa": "^1.8.0"
